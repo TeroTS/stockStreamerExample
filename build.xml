@@ -1,0 +1,52 @@
+<project name="ATAPI Java sample" basedir="." default="deploy.local">
+	<!-- Set variables for build directories -->
+	<property name="api.dir" value="../../ActiveTickAPI/ActiveTickServerAPI/output"/>
+	<property name="build.dir" value="build"/>
+	<property name="output.dir" value="output"/>
+	<property name="src.dir" value="src"/>
+	<property name="bin.dir" value="${output.dir}/bin"/>
+	<property name="jar.file" value="${output.dir}/example.jar"/>
+
+	<target name="init" description="Initialization and cleanup">
+		<echo>Cleaning up...</echo>
+		<delete dir="${build.dir}"/>		
+		<echo>Creating temporary build folders...</echo>
+		<mkdir dir="${build.dir}"/>
+	</target>
+	
+	<target name="build" depends="init, compile, compress" description="Main target">
+    	<echo>
+        	Building the .jar file.
+		</echo>
+	</target>
+
+	<target name="compile" description="Compilation target">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" source="1.6">
+			<classpath>
+	        	<pathelement location="${api.dir}/atapi.jar"/>        
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="compress" description="Compression target">
+        <jar destfile="${basedir}/${jar.file}" basedir="${build.dir}">
+        	<!--<fileset dir="${bin.dir}" includes="atapi.jar,gnu-crypto.jar,javax-crypto.jar,javax-security.jar" />-->
+            <manifest>
+				<attribute name="Main-Class" value="at.atserverapiexample.ATServerAPIExample"/>
+				<attribute name="Class-Path" value="gnu-crypto.jar javax-crypto.jar javax-security.jar atapi.jar"/>
+            </manifest>
+
+        </jar>
+	</target>
+	
+	<target name="deploy.local" depends="build" description="Deploy to local webserver">
+		<!--
+		<echo>Deleting files from local webserver...</echo>
+		<delete file="${bin.dir}/${jar.file}"/>		
+		<echo>Copying files to local webserver...</echo>
+		<copy todir="${bin.dir}" file="${jar.file}"/>
+		-->		
+	</target>
+		
+	
+</project>
